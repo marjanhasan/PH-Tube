@@ -62,8 +62,8 @@ const handleCards = (datas) => {
           >
         </div>
         <div class="flex py-5">
-          <div class="w-10 h-10">
-            <img class="w-10 h-10 bg-cover bg-center pr-3 rounded-full" src="${data.authors[0].profile_picture}" alt="" />
+          <div class="w-fit">
+            <img class="w-10 h-10 bg-cover bg-center mr-3 rounded-full" src="${data.authors[0].profile_picture}" alt="" />
           </div>
           <div>
             <h2 class="text-base font-bold text-[#171717]">
@@ -73,13 +73,20 @@ const handleCards = (datas) => {
               class="text-sm font-normal text-[#171717] pt-2.5 flex items-center gap-1"
             >
               ${data.authors[0].profile_name}
-              <img class="h-4 w-4" src="./images/verified.svg" alt="" />
+              <img class="verified" src="./images/verified.svg" alt="" />
             </p>
             <p class="text-sm font-normal text-[#171717] pt-2.5">${data.others.views} views</p>
           </div>
         </div>
     `;
       cardsContainer.appendChild(card);
+
+      const verifiedBatch = card.querySelector(".verified");
+      if (data.authors[0].verified === true) {
+        verifiedBatch.classList.add("h-4", "w-4");
+      } else {
+        verifiedBatch.classList.add("hidden");
+      }
     });
   }
 };
