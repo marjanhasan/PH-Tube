@@ -39,6 +39,14 @@ const handleButtonClicked = (button, id) => {
 };
 
 const handleCards = (datas) => {
+  handleSort = () => {
+    datas.forEach((item) => {
+      item.viewsNumeric = parseFloat(item.others.views.replace("K", "")) * 1000;
+    });
+    datas.sort((a, b) => b.viewsNumeric - a.viewsNumeric);
+    handleCards(datas);
+  };
+
   if (datas.length == 0) {
     cardsContainer.classList.add("hidden");
     oopsContainer.classList.remove("hidden");
@@ -49,6 +57,10 @@ const handleCards = (datas) => {
 
     datas.forEach((data) => {
       const card = document.createElement("div");
+      const postedDate = parseInt(data.others.posted_date);
+      data.postedDateFormatted = convertPostedDate(postedDate);
+      let time = data.postedDateFormatted;
+
       card.innerHTML = `
     <div class="relative max-w-fit">
           <img
@@ -57,8 +69,8 @@ const handleCards = (datas) => {
             alt=""
           />
           <span
-            class="absolute bottom-3 right-3 text-white p-1 bg-[#171717] rounded"
-            >3hrs 56 min ago</span
+            class="time absolute bottom-3 right-3 text-white p-1 bg-[#171717] rounded"
+            >${time} ago</span
           >
         </div>
         <div class="flex py-5">
@@ -87,8 +99,33 @@ const handleCards = (datas) => {
       } else {
         verifiedBatch.classList.add("hidden");
       }
+      const timeBlock = card.querySelector(".time");
+      if (time !== "NaNs") {
+        timeBlock.classList.remove("hidden");
+      } else {
+        timeBlock.classList.add("hidden");
+      }
     });
   }
 };
+
+function convertPostedDate(postedDate) {
+  const postDate = postedDate * 1000;
+
+  const seconds = Math.floor(postDate / 1000);
+  const minutes = Math.floor(seconds / 60);
+  const hours = Math.floor(minutes / 60);
+  const days = Math.floor(hours / 24);
+
+  if (days > 0) {
+    return `${days}d:${hours % 24}h:${minutes % 60}m:${seconds % 60}s`;
+  } else if (hours > 0) {
+    return `${hours}h:${minutes % 60}m:${seconds % 60}s`;
+  } else if (minutes > 0) {
+    return `${minutes}m:${seconds % 60}s`;
+  } else {
+    return `${seconds}s`;
+  }
+}
 
 displayCategories();
